@@ -37,12 +37,11 @@ func (h Handler) HandleError(err error) {
 func (h Handler) HandleTextMessage(message whatsapp.TextMessage) {
 	if message.Info.Timestamp < uint64(h.startTime.Unix()) ||
 		message.Info.Timestamp < uint64(time.Now().Unix()-30) ||
-		message.Info.FromMe || isPrivateChat(message) {
+		message.Info.FromMe {
 		return
 	}
 	addSenderJid(&message)
 	log.Printf("%v %v", message.Info.RemoteJid, message.Text)
-	h.wac.Read(message.Info.SenderJid, message.Info.Id)
 	text := whatsapp.TextMessage{
 		Info: whatsapp.MessageInfo{
 			RemoteJid: message.Info.RemoteJid,
@@ -54,18 +53,38 @@ func (h Handler) HandleTextMessage(message whatsapp.TextMessage) {
 			QuotedMessageID: message.Info.Id,
 			Participant:     message.Info.SenderJid,
 		},
-		Text: fmt.Sprintf("Kamu bilang: %v", message.Text),
+		Text: getTextReply(h, &message),
 	}
 	h.wac.Send(text)
 }
 
-func isPrivateChat(textMsg whatsapp.TextMessage) bool {
-	return !strings.HasSuffix(textMsg.Info.RemoteJid, "g.us")
+func getTextReply(h Handler, message *whatsapp.TextMessage) string {
+	if isPrivateChat(message) {
+		return "Hi! Namaku *Iceburg*. Undang aku ke grup kelas" +
+			"mu supaya aku bisa mengelola tugas kalian."
+	} else if cond, _ := groupExists(message.Info.RemoteJid); !cond {
+		if message.Text == "@register" {
+			groupName := h.wac.Store.Contacts[message.Info.RemoteJid].Name
+			checkError(addGroup(message.Info.RemoteJid, groupName))
+			return fmt.Sprintf("Sukses! Grup ```%v``` sukses terdaftar."+
+				" Gunakan perintah _@unregister_ untuk mereset data.", groupName)
+		}
+		return "Hi! Namaku *Iceburg*. Daftarkan grup ini dengan mengirim pe" +
+			"rintah _@register_."
+	} else if message.Text == "@unregister" {
+		checkError(deleteGroup(message.Info.RemoteJid))
+		return "Selamat tinggal! Terima kasih telah menggunakan *Iceburg*."
+	}
+	return "woy"
 }
 
-func addSenderJid(textMsg *whatsapp.TextMessage) {
-	textMsg.Info.SenderJid = textMsg.Info.RemoteJid
-	if len(textMsg.Info.Source.GetParticipant()) != 0 {
-		textMsg.Info.SenderJid = textMsg.Info.Source.GetParticipant()
+func isPrivateChat(message *whatsapp.TextMessage) bool {
+	return !strings.HasSuffix(message.Info.RemoteJid, "g.us")
+}
+
+func addSenderJid(message *whatsapp.TextMessage) {
+	message.Info.SenderJid = message.Info.RemoteJid
+	if len(message.Info.Source.GetParticipant()) != 0 {
+		message.Info.SenderJid = message.Info.Source.GetParticipant()
 	}
 }

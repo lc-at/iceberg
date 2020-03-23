@@ -18,7 +18,7 @@ func main() {
 	loadConfig(&cnf)
 	fmt.Println("iceburg \u2014 classroom chatbot")
 	log.Println("creating new connection")
-	createTable()
+	checkError(initiateDatabase())
 	wac, err := whatsapp.NewConn(5 * time.Second)
 	if err != nil {
 		log.Fatalf("error creating connection: %v\n", err)
@@ -47,5 +47,11 @@ func main() {
 	}
 	if err := writeSession(session); err != nil {
 		log.Fatalf("error saving session: %v", err)
+	}
+}
+
+func checkError(err error) {
+	if err != nil {
+		log.Fatalln(err)
 	}
 }
