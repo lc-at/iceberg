@@ -10,6 +10,8 @@ github.com/Rhymen/go-whatsapp/examples/restoreSession v0.0.0-20190325075644-cc25
 github.com/Rhymen/go-whatsapp/examples/sendImage v0.0.0-20190325075644-cc2581bbf24d/go.mod h1:RdiyhanVEGXTam+mZ3k6Y3VDCCvXYCwReOoxGozqhHw=
 github.com/Rhymen/go-whatsapp/examples/sendTextMessages v0.0.0-20190325075644-cc2581bbf24d/go.mod h1:suwzklatySS3Q0+NCxCDh5hYfgXdQUWU1DNcxwAxStM=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+github.com/go-sql-driver/mysql v1.5.0 h1:ozyZYNQW3x3HtqT1jira07DN2PArx2v7/mN66gGcHOs=
+github.com/go-sql-driver/mysql v1.5.0/go.mod h1:DCzpHaOWr8IXmIStZouvnhqoel9Qv2LBy8hT2VhHyBg=
 github.com/golang/protobuf v1.2.0/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
 github.com/golang/protobuf v1.3.0 h1:kbxbvI4Un1LUWKxufD+BiE6AEExYYgkQLQmLFqA1LFk=
 github.com/golang/protobuf v1.3.0/go.mod h1:Qd/q+1AKNOZr9uGQzbzCmRO6sUih6GTPZv6a1/R87v0=

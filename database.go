@@ -3,62 +3,93 @@ package main
 import (
 	"database/sql"
 	"errors"
-	"log"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/go-sql-driver/mysql"
 )
 
-var database, _ = sql.Open("sqlite3", cnf.DbFilename)
+var db *sql.DB
 
-func createTable() {
-	statement, err := database.Prepare(
-		`CREATE TABLE IF NOT EXISTS [group] (
-			[jid] NVARCHAR(50) NOT NULL PRIMARY KEY,
-			[name] NVARCHAR(50) NULL
-		);
-		CREATE TABLE IF NOT EXISTS [assignment] (
-			[id] INTEGER NOT NULL PRIMARY_KEY AUTOINCREMENT,
-			[subject] NVARCHAR(10) NOT NULL,
-			[description] TEXT NOT NULL,
-			[group_jid] NVARCHAR(50) NOT NULL,
-			FOREIGN KEY(group_jid) REFERENCES group(jid)
-		);`)
+func initiateDatabase() (err error) {
+	db, err = sql.Open("mysql", cnf.DbConnectionString)
 	if err != nil {
-		log.Fatalln(err)
+		return
 	}
-	statement.Exec()
-}
-
-func addGroup(jid, name string) (err error) {
-	statement, _ := database.Prepare(
-		`INSERT INTO group VALUES (?, ?)`)
-	_, err = statement.Exec(jid, name)
+	err = createTable()
 	return
 }
 
-func delGroup(jid string) (err error) {
-	statement, _ := database.Prepare(
-		`DELETE FROM assignment WHERE group_jid=?;
-		 DELETE FROM group WHERE jid=?`)
-	_, err = statement.Exec(jid, jid)
-	return 
+func createTable() (err error) {
+	stmt, err := db.Prepare(
+		`CREATE TABLE IF NOT EXISTS groups (
+			jid varchar(50) NOT NULL,
+			name varchar(50) NULL,
+			PRIMARY KEY (jid)
+		) DEFAULT CHARSET=utf8`)
+	if err != nil {
+		return
+	}
+	_, err = stmt.Exec()
+	if err != nil {
+		return
+	}
+	stmt, err = db.Prepare(
+		`CREATE TABLE IF NOT EXISTS assignments (
+			id int NOT NULL AUTO_INCREMENT,
+			subject varchar(10) NOT NULL,
+			description text NOT NULL,
+			group_jid varchar(50) NOT NULL,
+			PRIMARY KEY (id),
+			FOREIGN KEY (group_jid)
+				REFERENCES groups(jid)
+				ON DELETE CASCADE
+		) DEFAULT CHARSET=utf8`)
+	if err != nil {
+		return
+	}
+	_, err = stmt.Exec()
+	return
 }
 
-func groupExists(jid string) bool {
-	_, err := database.Query(`SELECT jid FROM group WHERE jid=?`, jid)
-	if err == sql.ErrNoRows {
-		return false
+func addGroup(jid, name string) (err error) {
+	stmt, err := db.Prepare(
+		`INSERT INTO groups (jid, name) VALUES (?, ?)`)
+	if err != nil {
+		return
 	}
-	return true
+	_, err = stmt.Exec(jid, name)
+	return
+}
+
+func deleteGroup(jid string) (err error) {
+	stmt, err := db.Prepare(
+		`DELETE FROM groups WHERE jid=?`)
+	if err != nil {
+		return
+	}
+	_, err = stmt.Exec(jid)
+	return
+}
+
+func groupExists(jid string) (bool, error) {
+	stmt := `SELECT jid FROM groups WHERE jid= ?`
+	err := db.QueryRow(stmt, jid).Scan(&jid)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return false, nil
+		}
+		return false, err
+	}
+	checkError(err)
+	return true, nil
 }
 
 func addAssignment(subject, desc, groupJid string) (err error) {
-	if !groupExists(groupJid) {
+	if cond, _ := groupExists(groupJid); !cond {
 		return errors.New("invalid group jid")
 	}
-	statement, err := database.Prepare(
-		`INSERT INTO assignment (subject, description,
+	stmt, err := db.Prepare(
+		`INSERT INTO sassignments (subject, description,
 		 group_jid) VALUES (?, ?, ?)`)
-	statement.Exec(subject, desc, groupJid)
+	_, err = stmt.Exec(subject, desc, groupJid)
 	return
 }
