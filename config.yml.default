@@ -1,0 +1,11 @@
+client_name: "Iceburg"
+db_filename: "iceburg.db"
+session_filename: "iceburg.gob"
+days:
+  0: "minggu"
+  1: "senin"
+  2: "selasa"
+  3: "rabu"
+  4: "kamis"
+  5: "jumat"
+  6: "sabtu"
