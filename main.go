@@ -16,9 +16,12 @@ var client Handler
 
 func main() {
 	loadConfig(&cnf)
-	fmt.Println("iceburg \u2014 classroom chatbot")
+	fmt.Println("iceberg \u2014 classroom chatbot")
 	log.Println("creating new connection")
 	checkError(initiateDatabase())
+	//log.Fatalln((&assignmentModel{
+	//	Deadline: "1,3,5,7",
+	//}).deadlineDistance())
 	wac, err := whatsapp.NewConn(5 * time.Second)
 	if err != nil {
 		log.Fatalf("error creating connection: %v\n", err)

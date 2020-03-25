@@ -115,6 +115,31 @@ func getTextReply(h Handler, message *whatsapp.TextMessage) string {
 				checkError((&assignmentModel{ID: ID}).delete())
 			}
 			return cnf.getMessageTemplate("assignment_deleted")
+		case message.Text == "@tugas":
+			assignmentRows, err := (&assignmentModel{
+				GroupJID: message.Info.RemoteJid}).query()
+			checkError(err)
+			var assignments []string
+			for _, assignment := range assignmentRows {
+				assignment.humanReadableValues()
+				assignments = append(assignments, fmt.Sprintf(
+					cnf.getMessageTemplate("assignment_item"),
+					assignment.Subject, assignment.ID,
+					assignment.Description, assignment.Deadline,
+				))
+			}
+			var formattedAssignments string
+			if len(assignments) == 0 {
+				formattedAssignments = cnf.getMessageTemplate("empty_assignment_list")
+			} else {
+				formattedAssignments = strings.Join(assignments, "\n")
+			}
+			date := time.Now().Format("2006/01/02 15:04:05")
+			dayname, _ := cnf.getNameByDay(int(time.Now().Weekday()))
+			return fmt.Sprintf(
+				cnf.getMessageTemplate("assignment_list"),
+				fmt.Sprintf("%s, %s", strings.Title(dayname), date),
+				formattedAssignments)
 		default:
 			return ""
 		}

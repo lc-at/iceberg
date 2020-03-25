@@ -1,4 +1,4 @@
-module github.com/p4kl0nc4t/iceburg
+module github.com/p4kl0nc4t/iceberg
 
 go 1.14
 

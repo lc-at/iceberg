@@ -6,7 +6,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// config for Iceburg
+// config for Iceberg
 type config struct {
 	ClientName         string            `yaml:"client_name"`
 	DbConnectionString string            `yaml:"db_connection_string"`

@@ -11,7 +11,7 @@ import (
 
 func login(wac *whatsapp.Conn) error {
 	session, err := readSession()
-	wac.SetClientName(cnf.ClientName, "Iceburg whatsapp chatbot")
+	wac.SetClientName(cnf.ClientName, "Iceberg whatsapp chatbot")
 	if err == nil {
 		session, err = wac.RestoreWithSession(session)
 		if err != nil {
