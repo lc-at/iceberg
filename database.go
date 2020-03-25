@@ -144,7 +144,7 @@ func (model *assignmentModel) adjustValues() {
 	var deadlineDays []string
 	for _, day := range deadlines {
 		day = strings.ToLower(strings.TrimSpace(day))
-		n, ok := cnf.Days[day]
+		n, ok := cnf.getDayByName(day)
 		if !ok {
 			model.Deadline = strings.TrimSpace(strings.Title(model.Deadline))
 			return
@@ -154,13 +154,30 @@ func (model *assignmentModel) adjustValues() {
 	model.Deadline = strings.Join(deadlineDays, ",")
 }
 
+func (model *assignmentModel) humanReadableValues() {
+	deadlines := strings.Split(model.Deadline, ",")
+	var deadlineDays []string
+	for _, day := range deadlines {
+		n, err := strconv.Atoi(day)
+		if err != nil || n <= 0 || n > 7 {
+			return
+		}
+		name, ok := cnf.getNameByDay(n)
+		if !ok {
+			return
+		}
+		deadlineDays = append(deadlineDays, name)
+	}
+	model.Deadline = strings.Join(deadlineDays, ",")
+}
+
 func (model *assignmentModel) DeadlineDistance() int {
-	days := strings.Split(model.Deadline, ",")
+	deadlines := strings.Split(model.Deadline, ",")
 	var lowestDistance int
-	for _, v := range days {
+	for _, deadline := range deadlines {
 		today := time.Now().Weekday()
-		deadline, err := strconv.Atoi(v)
-		delta := (deadline - int(today)) + 1
+		deadlineDay, err := strconv.Atoi(deadline)
+		delta := (deadlineDay - int(today)) + 1
 		if err != nil {
 			return -1
 		} else if delta >= 0 {
