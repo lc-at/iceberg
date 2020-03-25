@@ -1,11 +1,57 @@
 client_name: "Iceberg"
-db_filename: "iceberg.db"
+db_connection_string: "cat@/iceberg?charset=utf8"
 session_filename: "iceberg.gob"
 days:
-  0: "minggu"
-  1: "senin"
-  2: "selasa"
-  3: "rabu"
-  4: "kamis"
-  5: "jumat"
-  6: "sabtu"
+  0: minggu
+  1: senin
+  2: selasa
+  3: rabu
+  4: kamis
+  5: jumat
+  6: sabtu
+message_templates:
+  private_chat: |-
+    Hai! Namaku *Iceberg*.
+    Undang aku ke grup kelasmu supaya aku bisa membantu mengelola tugas kalian.
+    Saat ini, aku hanya bisa digunakan di dalam group chat. Maaf ya ;)
+  register_success: |-
+    Sukses! Grup _%v_ telah terdaftar.
+    Untuk petunjuk penggunaan, kirimkan perintah ```@menu```.
+    Untuk mereset (menghapus seluruh data grup), gunakan perintah ```@unregister```.
+    Selamat menggunakan! Terima kash sudah mempercayai *Iceberg*.
+  not_registered: |-
+    Hai! Namaku *Iceberg*.
+    Aku adalah bot yang dapat mengelola tugas sekolah kalian.
+    Daftarkan grup ini dengan mengirim perintah ```@register```.
+  unregister: |-
+    Selamat tinggal! Terima kasih telah menggunakan *Iceberg*.
+  menu: |-
+    *Iceberg* — Daftar perintah
+    *1.* ```@menu```: Menampilkan daftar ini.
+    *2.* ```@tugas```: Menampilkan daftar tugas.
+    *3.* ```@tambah [kode subjek] [hari/deadline]```: Menambahkan tugas berdasarkan pesan yang dikutip. Gunakan hari sebagai deadline agar dapat diurutkan. Misalnya ```@tambah mtkp senin,selasa```.
+    *4.* ```@hapus [id tugas...]```: Menghapus tugas dengan id tertentu. Misalnya ```@hapus 12``` atau ```@hapus 1,2,3```.
+    Selamat menggunakan!
+  assignment_list: |-
+    *Iceberg* — Daftar tugas
+    %v
+    %v
+    Semangat!
+  assignment_item: |-
+    ‣ [```%v```:%v] %v (deadline: _%v_)
+  empty_assignment_list: |-
+    Selamat! Tidak ada tugas.
+  invalid_add_assignment_args: |-
+    Format tidak valid. Pastikan subjek hanya satu kata (misalnya, mtkp, mtkw)!
+  assignment_too_long: |-
+    Deadline atau subjek yang diberikan terlalu panjang. Pastikan subjek hanya satu kata dan deadline singkat!
+  no_assignment_description: |-
+    Tidak ada deskripsi tugas yang diberikan. Berikan deskripsi dengan mengutip pesan!
+  assignment_added: |-
+    Sukses! Tugas berhasil ditambahkan.
+  assignment_deleted: |-
+    Sukses! Tugas berhasil dihapus.
+  invalid_args: |-
+    Format perintah yang diberikan tidak valid.
+  invalid_assignment_id: |-
+    ID tugas yang diberikan tidak valid.
