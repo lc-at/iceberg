@@ -95,19 +95,25 @@ func getTextReply(h Handler, message *whatsapp.TextMessage) string {
 				Deadline:    args[2],
 			}).add())
 			return fmt.Sprintf(cnf.getMessageTemplate("assignment_added"))
-		case strings.HasPrefix(message.Text, "@delete"):
-			args := strings.Split(message.Text, " ")
+		case strings.HasPrefix(message.Text, "@hapus"):
+			args := strings.SplitN(message.Text, " ", 2)
 			if len(args) != 2 {
 				return cnf.getMessageTemplate("invalid_args")
 			}
-			assignmentID, err := strconv.Atoi(args[1])
-			assignment := &assignmentModel{ID: assignmentID}
-			if err != nil {
-				return cnf.getMessageTemplate("invalid_args")
-			} else if cond, _ := assignment.isExist(); !cond {
-				return cnf.getMessageTemplate("invalid_assignment_id")
+			var assignmentID []int
+			for _, v := range strings.Split(args[1], ",") {
+				ID, err := strconv.Atoi(strings.TrimSpace(v))
+				assignment := &assignmentModel{ID: ID}
+				if err != nil {
+					return cnf.getMessageTemplate("invalid_args")
+				} else if cond, _ := assignment.isExist(); !cond {
+					return cnf.getMessageTemplate("invalid_assignment_id")
+				}
+				assignmentID = append(assignmentID, ID)
 			}
-			checkError(assignment.delete())
+			for _, ID := range assignmentID {
+				checkError((&assignmentModel{ID: ID}).delete())
+			}
 			return cnf.getMessageTemplate("assignment_deleted")
 		default:
 			return ""
