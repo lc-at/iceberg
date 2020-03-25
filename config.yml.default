@@ -1,6 +1,6 @@
-client_name: "Iceburg"
-db_filename: "iceburg.db"
-session_filename: "iceburg.gob"
+client_name: "Iceberg"
+db_filename: "iceberg.db"
+session_filename: "iceberg.gob"
 days:
   0: "minggu"
   1: "senin"

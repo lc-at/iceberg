@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -89,7 +90,8 @@ func (model *assignmentModel) query() (result []assignmentModel, err error) {
 	if cond, _ := (&groupModel{JID: model.GroupJID}).isExist(); !cond {
 		return nil, errors.New("invalid group jid")
 	}
-	rows, err := db.Query(`SELECT * FROM assignments WHERE group_jid = ?`)
+	rows, err := db.Query(`SELECT * FROM assignments WHERE group_jid = ?`,
+		model.GroupJID)
 	if err != nil {
 		return
 	}
@@ -101,9 +103,15 @@ func (model *assignmentModel) query() (result []assignmentModel, err error) {
 			return
 		}
 		result = append(result, row)
+
 	}
-	sort.SliceStable(result, func(i, j int) bool {
-		return result[i].DeadlineDistance() < result[j].DeadlineDistance()
+	sort.Slice(result, func(i, j int) bool {
+		if result[i].deadlineDistance() < 0 {
+			return false
+		} else if result[j].deadlineDistance() < 0 {
+			return true
+		}
+		return result[i].deadlineDistance() < result[j].deadlineDistance()
 	})
 	return
 
@@ -151,7 +159,7 @@ func (model *assignmentModel) adjustValues() {
 		}
 		deadlineDays = append(deadlineDays, strconv.Itoa(n))
 	}
-	model.Deadline = strings.Join(deadlineDays, ",")
+	model.Deadline = strings.Join(deadlineDays, ", ")
 }
 
 func (model *assignmentModel) humanReadableValues() {
@@ -166,27 +174,30 @@ func (model *assignmentModel) humanReadableValues() {
 		if !ok {
 			return
 		}
-		deadlineDays = append(deadlineDays, name)
+		deadlineDays = append(deadlineDays, strings.Title(name))
 	}
 	model.Deadline = strings.Join(deadlineDays, ",")
 }
 
-func (model *assignmentModel) DeadlineDistance() int {
+func (model *assignmentModel) deadlineDistance() int {
+	// dist: 3  deadline: 4(+1) today: (3+1)
 	deadlines := strings.Split(model.Deadline, ",")
-	var lowestDistance int
+	lowestDistance := -1
 	for _, deadline := range deadlines {
 		today := time.Now().Weekday()
 		deadlineDay, err := strconv.Atoi(deadline)
-		delta := (deadlineDay - int(today)) + 1
+		delta := (deadlineDay + 1) - (int(today) + 1)
 		if err != nil {
 			return -1
-		} else if delta >= 0 {
-			return delta
+		} else if delta >= 0 && (delta < lowestDistance || lowestDistance < 0) {
+			lowestDistance = delta
+			continue
 		}
-		distance := delta + 6
-		if distance < lowestDistance {
+		distance := 7 + delta
+		if distance < lowestDistance || lowestDistance < 0 {
 			lowestDistance = distance
 		}
 	}
+	fmt.Println(model.ID, lowestDistance)
 	return lowestDistance
 }

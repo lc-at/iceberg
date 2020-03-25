@@ -1,4 +1,4 @@
-module github.com/ttycelery/iceburg
+module github.com/ttycelery/iceberg
 
 go 1.14
 
