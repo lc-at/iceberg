@@ -144,7 +144,7 @@ func getTextReply(h Handler, message *whatsapp.TextMessage) string {
 				cnf.getMessageTemplate("assignment_list"),
 				fmt.Sprintf("%s, %s", strings.Title(dayname), date),
 				formattedAssignments)
-		case message.Text == "@about":
+		case message.Text == "@tentang":
 			return cnf.getMessageTemplate("about")
 		default:
 			return ""
