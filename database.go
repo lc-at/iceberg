@@ -130,13 +130,15 @@ func (model *assignmentModel) add() (err error) {
 }
 
 func (model *assignmentModel) delete() (err error) {
-	_, err = db.Exec(`DELETE FROM assignments WHERE id = ?`)
+	_, err = db.Exec(
+		`DELETE FROM assignments WHERE id = ? AND group_jid = ?`,
+		model.ID, model.GroupJID)
 	return
 }
 
 func (model *assignmentModel) isExist() (bool, error) {
-	stmt := `SELECT id FROM assignments WHERE id = ?`
-	err := db.QueryRow(stmt, model.ID).Scan(&model.ID)
+	stmt := `SELECT id FROM assignments WHERE id = ? AND group_jid = ?`
+	err := db.QueryRow(stmt, model.ID, model.GroupJID).Scan(&model.ID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return false, nil
@@ -166,7 +168,7 @@ func (model *assignmentModel) humanReadableValues() {
 	deadlines := strings.Split(model.Deadline, ",")
 	var deadlineDays []string
 	for _, day := range deadlines {
-		n, err := strconv.Atoi(day)
+		n, err := strconv.Atoi(strings.TrimSpace(day))
 		if err != nil || n <= 0 || n > 7 {
 			return
 		}
@@ -176,7 +178,7 @@ func (model *assignmentModel) humanReadableValues() {
 		}
 		deadlineDays = append(deadlineDays, strings.Title(name))
 	}
-	model.Deadline = strings.Join(deadlineDays, ",")
+	model.Deadline = strings.Join(deadlineDays, ", ")
 }
 
 func (model *assignmentModel) deadlineDistance() int {

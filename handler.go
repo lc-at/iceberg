@@ -103,7 +103,10 @@ func getTextReply(h Handler, message *whatsapp.TextMessage) string {
 			var assignmentID []int
 			for _, v := range strings.Split(args[1], ",") {
 				ID, err := strconv.Atoi(strings.TrimSpace(v))
-				assignment := &assignmentModel{ID: ID}
+				assignment := &assignmentModel{
+					ID:       ID,
+					GroupJID: message.Info.RemoteJid,
+				}
 				if err != nil {
 					return cnf.getMessageTemplate("invalid_args")
 				} else if cond, _ := assignment.isExist(); !cond {
@@ -112,7 +115,8 @@ func getTextReply(h Handler, message *whatsapp.TextMessage) string {
 				assignmentID = append(assignmentID, ID)
 			}
 			for _, ID := range assignmentID {
-				checkError((&assignmentModel{ID: ID}).delete())
+				checkError((&assignmentModel{ID: ID,
+					GroupJID: message.Info.RemoteJid}).delete())
 			}
 			return cnf.getMessageTemplate("assignment_deleted")
 		case message.Text == "@tugas":
@@ -140,6 +144,8 @@ func getTextReply(h Handler, message *whatsapp.TextMessage) string {
 				cnf.getMessageTemplate("assignment_list"),
 				fmt.Sprintf("%s, %s", strings.Title(dayname), date),
 				formattedAssignments)
+		case message.Text == "@about":
+			return cnf.getMessageTemplate("about")
 		default:
 			return ""
 		}
