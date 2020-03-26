@@ -16,7 +16,7 @@ type config struct {
 }
 
 func loadConfig(c *config) {
-	f, err := os.Open("config.yml")
+	f, err := os.Open(*configPath)
 	checkError(err)
 	defer f.Close()
 

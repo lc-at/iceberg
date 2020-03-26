@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -14,14 +15,14 @@ import (
 var cnf config
 var client Handler
 
+var configPath = flag.String("config", "config.yml", "Location of the config file.")
+
 func main() {
+	flag.Parse()
 	loadConfig(&cnf)
 	fmt.Println("iceberg \u2014 classroom chatbot")
 	log.Println("creating new connection")
 	checkError(initiateDatabase())
-	//log.Fatalln((&assignmentModel{
-	//	Deadline: "1,3,5,7",
-	//}).deadlineDistance())
 	wac, err := whatsapp.NewConn(5 * time.Second)
 	if err != nil {
 		log.Fatalf("error creating connection: %v\n", err)
