@@ -4,7 +4,8 @@ Iceberg is a WhatsApp chatbot designed to manage school assignments. This is my 
 ## Installation
 Before installing, make sure you have a working MySQL database, a device with WhatsApp installed, and a good internet connection.
 ```
-go install https://github.com/p4kl0nc4t/iceberg
+go get github.com/p4kl0nc4t/iceberg
+go install github.com/p4kl0nc4t/iceberg
 ```
 ## Usage
 1. Set up a configuration file based on ![this](https://github.com/p4kl0nc4t/iceberg/blob/master/config.yml.default) template.
