@@ -1,5 +1,6 @@
 # Iceberg
-Iceberg is a WhatsApp chatbot designed to manage school assignments. This is my first Golang project. It was built using go-whatsapp library (https://github.com/Rhymen/go-whatsapp).
+Iceberg is a WhatsApp chatbot designed to manage school assignments. This is my first Golang project. It was built using go-whatsapp library (https://github.com/Rhymen/go-whatsapp). This project is not well-documented but some things should be self-explanatory.
+
 ## Installation
 Before installing, make sure you have a working MySQL database, a device with WhatsApp installed, and a good internet connection.
 ```
