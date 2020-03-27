@@ -27,7 +27,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("error creating connection: %v\n", err)
 	}
-
+	wac.SetClientVersion(100, 100, 1307)
 	client = Handler{wac, time.Now()}
 	wac.AddHandler(client)
 	if err := login(wac); err != nil {
