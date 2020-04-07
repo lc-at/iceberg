@@ -67,6 +67,6 @@ func (h Handler) HandleTextMessage(message whatsapp.TextMessage) {
 	case whatsapp.ImageMessage:
 		m.Info = defaultMessageInfo
 		m.ContextInfo = defaultMessageContextInfo
-		log.Print(h.wac.Send(m))
+		h.wac.Send(m)
 	}
 }
