@@ -6,11 +6,11 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// config for Iceberg
 type config struct {
 	ClientName         string            `yaml:"client_name"`
 	DbConnectionString string            `yaml:"db_connection_string"`
 	SessionFilename    string            `yaml:"session_filename"`
+	WolframAlphaAppID  string            `yaml:"wolframalpha_app_id"`
 	Days               map[int]string    `yaml:"days"`
 	MessageTemplates   map[string]string `yaml:"message_templates"`
 }
