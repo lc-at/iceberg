@@ -1,6 +1,7 @@
 client_name: "Iceberg"
 db_connection_string: "cat@/iceberg?charset=utf8"
 session_filename: "iceberg.gob"
+wolframalpha_app_id: ""
 days:
   0: minggu
   1: senin
@@ -29,9 +30,10 @@ message_templates:
     — *Daftar Perintah*
     *1.* ```@menu```: Menampilkan daftar ini.
     *2.* ```@tugas```: Menampilkan daftar tugas.
-    *3.* ```@tambah [kode subjek] [hari/deadline]```: Menambahkan tugas berdasarkan pesan yang dikutip. Gunakan hari sebagai deadline agar dapat diurutkan. Misalnya ```@tambah mtkp senin,selasa```.
+    *3.* ```@tambah [kode subjek] [hari/deadline...]```: Menambahkan tugas berdasarkan pesan yang dikutip. Gunakan hari sebagai deadline agar dapat diurutkan. Misalnya ```@tambah mtkp senin,selasa```.
     *4.* ```@hapus [id tugas...]```: Menghapus tugas dengan id tertentu. Misalnya ```@hapus 12``` atau ```@hapus 1,2,3```.
     Selamat menggunakan!
+    *5.* ```@wolfram [input...]```: Menggunakan WolframAlpha Misalnya ```@wolfram y=x^2```.
     *5.* ```@tentang```: Menampilkan tentang Iceberg.
   assignment_list: |-
     — *Daftar Tugas*
@@ -55,6 +57,10 @@ message_templates:
     Format perintah yang diberikan tidak valid.
   invalid_assignment_id: |-
     ID tugas yang diberikan tidak valid.
+  wolfram_bad_input: |-
+    Gagal! Periksa kembali input Anda.
+  wolfram_error: |-
+    Terjadi suatu kesalahan. Mohon untuk segera dilaporkan.
   about: |-
     Iceberg, a WhatsApp-based classroom chatbot for assignment management.
     Submit issues to:
