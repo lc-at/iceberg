@@ -52,6 +52,8 @@ func getReply(h Handler, message *whatsapp.TextMessage) (interface{}, bool) {
 
 func getTextReply(h Handler, message *whatsapp.TextMessage) string {
 	switch {
+	case message.Text == "@ping":
+		return "Pong!"
 	case message.Text == "@menu":
 		return cnf.getMessageTemplate("menu")
 	case strings.HasPrefix(message.Text, "@tambah"):
